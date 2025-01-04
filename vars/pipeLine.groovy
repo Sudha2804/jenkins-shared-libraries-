@@ -1,41 +1,41 @@
-def buildProject() {
+def build_Project() {
     echo 'Building project with Maven...'
     sh 'mvn clean package'
 }
-def code() {
+def chechout_code() {
     echo 'Checking out code...'
     checkout scm
 }
-def cleanup() {
+def clean_up() {
     echo 'Cleaning up...'
     sh 'pkill -f "mvn spring-boot:run" || true'
 }
-def cleanupWorkspace() {
+def cleanup_Workspace() {
     echo 'Cleaning up the workspace...'
     deleteDir() // Deletes all files in the current workspace
 }
-def runApplication() {
+def run_Application() {
     echo 'Running Spring Boot application...'
     sh 'nohup mvn spring-boot:run &'
     sleep(time: 15, unit: 'SECONDS')
 
-    def publicIp = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
+    def public_Ip = sh(script: "curl -s https://checkip.amazonaws.com", returnStdout: true).trim()
     echo "The application is running and accessible at: http://${publicIp}:8080"
 }
-def setupJava() {
+def setup_Java() {
     echo 'Setting up Java 17...'
     sh 'sudo apt update'
     sh 'sudo apt install -y openjdk-17-jdk'
 }
-def setupMaven() {
+def setup_Maven() {
     echo 'Setting up Maven...'
     sh 'sudo apt install -y maven'
 }
-def stopApplication() {
+def stop_Application() {
     echo 'Gracefully stopping the Spring Boot application...'
     sh 'mvn spring-boot:stop'
 }
-def tagBuild(String tagName, String message = 'Build tagging') {
+def tag_Build(String tagName, String message = 'Build tagging') {
     echo "Tagging the build with tag: ${tagName}"
     
     // Tagging the current commit in Git
@@ -44,11 +44,11 @@ def tagBuild(String tagName, String message = 'Build tagging') {
         git push origin ${tagName}
     """
 }
-def uploadArtifact(String artifactPath) {
+def upload_Artifact(String artifactPath) {
     echo 'Uploading artifact...'
     archiveArtifacts artifacts: artifactPath, allowEmptyArchive: true
 }
-def validateApp() {
+def validate_App() {
     echo 'Validating that the app is running...'
     def response = sh(script: 'curl --write-out "%{http_code}" --silent --output /dev/null http://localhost:8080', returnStdout: true).trim()
     if (response == "200") {
